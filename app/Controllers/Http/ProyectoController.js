@@ -29,6 +29,16 @@ class ProyectoController {
         await proyecto.delete();
         return proyecto;
     }
+
+    async update ({auth, params, request}){
+        const user = await auth.getUser();
+        const {id} = params;
+        const proyecto = await Proyecto.find(id);
+        AutorizacionService.verificarPermiso(proyecto, user);
+        proyecto.merge(request.only('nombre'));
+        await proyecto.save();
+        return proyecto;
+    }
 }
 
 module.exports = ProyectoController
